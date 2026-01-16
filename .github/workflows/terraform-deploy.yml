@@ -126,7 +126,7 @@ jobs:
         run: |
           terraform init \
             -backend-config="bucket=${{ steps.read-config.outputs.bucket-name }}" \
-            -backend-config="key=${{ steps.read-config.outputs.key }}" \
+            -backend-config="key=prod/${{ steps.read-config.outputs.key }}" \
             -backend-config="region=${{ steps.read-config.outputs.region }}" \
             -backend-config="encrypt=true"
 
