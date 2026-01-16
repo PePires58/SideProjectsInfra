@@ -23,11 +23,7 @@ This repository manages AWS infrastructure using Terraform with automated deploy
 
 The infrastructure is configured via `.pipeline.yaml` in the root directory. This file defines:
 
-- Terraform version and backend configuration
-- VPC settings (CIDR blocks, DNS options)
-- Subnet configurations (public/private)
-- Supported environments (dev/prod)
-- Common tags
+- Terraform version and backend configuration (S3 bucket, region, state key)
 
 ## Infrastructure Components
 
@@ -43,13 +39,14 @@ The infrastructure is configured via `.pipeline.yaml` in the root directory. Thi
 
 The pipeline automatically creates and manages:
 - S3 bucket for Terraform state storage (with versioning and encryption)
-- DynamoDB table for state locking
+
+State locking is not implemented to simplify the setup.
 
 ## GitHub Actions Workflow
 
 The workflow consists of three main jobs:
 
-1. **setup-backend**: Creates S3 bucket and DynamoDB table if they don't exist
+1. **setup-backend**: Creates S3 bucket if it doesn't exist
 2. **terraform-plan**: Runs terraform plan for both dev and prod environments
 3. **terraform-apply**: Applies changes to infrastructure (only on main branch)
 
@@ -77,8 +74,7 @@ Use the GitHub Actions "Workflow Dispatch" feature to manually trigger deploymen
    terraform init \
      -backend-config="bucket=sideprojects-terraform-state" \
      -backend-config="key=dev/vpc/terraform.tfstate" \
-     -backend-config="region=us-east-1" \
-     -backend-config="dynamodb_table=terraform-state-lock" \
+     -backend-config="region=sa-east-1" \
      -backend-config="encrypt=true"
    ```
 
@@ -123,8 +119,8 @@ The Terraform configuration outputs the following values:
 ## Security
 
 - Terraform state is stored in an encrypted S3 bucket with versioning enabled
-- State locking is managed via DynamoDB to prevent concurrent modifications
 - AWS credentials are stored as GitHub secrets and never committed to the repository
+- State locking is not implemented for simplicity
 
 ## Contributing
 
