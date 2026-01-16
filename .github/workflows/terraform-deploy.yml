@@ -252,7 +252,7 @@ jobs:
             -backend-config="encrypt=true"
 
       - name: Download Plan Artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           name: tfplan-${{ matrix.environment }}
           path: terraform/
