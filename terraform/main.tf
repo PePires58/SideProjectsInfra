@@ -2,7 +2,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
 
-  name = "sideprojects-vpc-${var.environment}"
+  name = "sideprojects-vpc"
   cidr = var.vpc_cidr
 
   azs             = var.availability_zones
@@ -16,10 +16,7 @@ module "vpc" {
   enable_vpn_gateway = false
 
   tags = merge(
-    var.common_tags,
-    {
-      Environment = var.environment
-    }
+    var.common_tags
   )
 
   public_subnet_tags = {

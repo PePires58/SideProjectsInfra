@@ -4,12 +4,6 @@ variable "aws_region" {
   default     = "sa-east-1"
 }
 
-variable "environment" {
-  description = "Environment name (dev/prod)"
-  type        = string
-  default     = "dev"
-}
-
 variable "vpc_cidr" {
   description = "CIDR block for VPC"
   type        = string
@@ -41,7 +35,7 @@ variable "private_subnet_cidrs" {
 variable "availability_zones" {
   description = "Availability zones for subnets"
   type        = list(string)
-  default     = ["sa-east-1a", "sa-east-1b"]
+  default     = ["sa-east-1a"]
 
   validation {
     condition     = length(var.availability_zones) > 0

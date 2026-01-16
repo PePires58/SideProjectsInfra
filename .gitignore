@@ -1,8 +1,7 @@
 # Local .terraform directories
 .terraform/
 
-# Include lock file for reproducible builds
-!.terraform.lock.hcl
+.terraform.lock.hcl
 
 # .tfstate files
 *.tfstate

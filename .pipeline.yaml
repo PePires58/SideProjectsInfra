@@ -5,4 +5,4 @@ terraform:
   backend:
     bucket_name: "sideprojects-terraform-state"
     region: "sa-east-1"
-    key: "vpc/terraform.tfstate"
+    key: "terraform.tfstate"
