@@ -3,6 +3,6 @@
 terraform:
   version: "1.6.0"
   backend:
-    bucket_name: "sideprojects-terraform-state"
+    bucket_name: "pepires58-sideprojects-terraform-state"
     region: "sa-east-1"
     key: "terraform.tfstate"
