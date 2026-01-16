@@ -29,11 +29,15 @@ The infrastructure is configured via `.pipeline.yaml` in the root directory. Thi
 
 ### VPC Resources
 
+The infrastructure uses the official [terraform-aws-modules/vpc](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest) module, which provides:
+
 - **VPC**: Main virtual private cloud with DNS support enabled
 - **Internet Gateway**: Provides internet access for public subnets
 - **Public Subnets**: Subnets with auto-assigned public IPs and internet access
 - **Private Subnets**: Isolated subnets for internal resources
 - **Route Tables**: Separate routing for public and private subnets
+
+The module simplifies VPC management and follows AWS best practices.
 
 ### Terraform Backend
 
@@ -108,13 +112,22 @@ The Terraform configuration outputs the following values:
 │   └── workflows/
 │       └── terraform-deploy.yml
 ├── terraform/
-│   ├── main.tf          # VPC resources
+│   ├── main.tf          # VPC module configuration
 │   ├── variables.tf     # Input variables
 │   ├── outputs.tf       # Output values
 │   └── provider.tf      # Provider and backend configuration
 ├── .pipeline.yaml       # Pipeline configuration
 └── README.md
 ```
+
+## Terraform Modules
+
+This infrastructure uses the official [terraform-aws-modules/vpc/aws](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest) module (version ~> 5.0) for VPC management. This module:
+
+- Follows AWS best practices
+- Provides comprehensive VPC configuration
+- Simplifies infrastructure management
+- Is actively maintained by the community
 
 ## Security
 
