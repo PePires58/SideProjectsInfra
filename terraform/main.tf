@@ -10,6 +10,24 @@ resource "aws_vpc" "main" {
   }
 }
 
+# Locals for safe subnet-AZ mapping
+locals {
+  # Ensure we have enough AZs for public subnets
+  public_subnet_count  = length(var.public_subnet_cidrs)
+  private_subnet_count = length(var.private_subnet_cidrs)
+
+  # Use modulo to cycle through available AZs if we have more subnets than AZs
+  public_subnet_azs = [
+    for i in range(local.public_subnet_count) :
+    var.availability_zones[i % length(var.availability_zones)]
+  ]
+
+  private_subnet_azs = [
+    for i in range(local.private_subnet_count) :
+    var.availability_zones[i % length(var.availability_zones)]
+  ]
+}
+
 # Internet Gateway
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
@@ -25,7 +43,7 @@ resource "aws_subnet" "public" {
   count                   = length(var.public_subnet_cidrs)
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_cidrs[count.index]
-  availability_zone       = var.availability_zones[count.index]
+  availability_zone       = local.public_subnet_azs[count.index]
   map_public_ip_on_launch = true
 
   tags = {
@@ -40,7 +58,7 @@ resource "aws_subnet" "private" {
   count             = length(var.private_subnet_cidrs)
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.private_subnet_cidrs[count.index]
-  availability_zone = var.availability_zones[count.index]
+  availability_zone = local.private_subnet_azs[count.index]
 
   tags = {
     Name        = "sideprojects-private-subnet-${count.index + 1}"
