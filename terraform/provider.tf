@@ -9,12 +9,9 @@ terraform {
   }
 
   backend "s3" {
-    # Backend configuration will be provided via backend config file or command line
-    # bucket         = "sideprojects-terraform-state"
-    # key            = "vpc/terraform.tfstate"
-    # region         = "us-east-1"
-    # dynamodb_table = "terraform-state-lock"
-    # encrypt        = true
+    bucket         = "pepires58-sideprojects-terraform-state"
+    key            = "prod/terraform.tfstate"
+    region         = "sa-east-1"
   }
 }
 
