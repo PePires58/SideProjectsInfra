@@ -1,6 +1,6 @@
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
+  version = "6.5.1"
 
   name = "sideprojects-vpc"
   cidr = var.vpc_cidr
@@ -26,4 +26,24 @@ module "vpc" {
   private_subnet_tags = {
     Type = "Private"
   }
+}
+
+module "public_app_sg" {
+  source = "terraform-aws-modules/security-group/aws"
+
+  name        = "public-app-sg"
+  description = "Security group for public application servers"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress_cidr_blocks      = ["0.0.0.0/0"]
+  ingress_rules            = ["http-80-tcp","https-443-tcp"]
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 8080
+      to_port     = 8080
+      protocol    = "tcp"
+      description = "Public application ports"
+      cidr_blocks = "0.0.0.0/0"
+    }
+  ]
 }
