@@ -6,11 +6,11 @@ Infrastructure as Code (IaC) for side projects using Terraform and GitHub Action
 
 This repository manages AWS infrastructure using Terraform with automated deployments via GitHub Actions. The infrastructure includes:
 
-- VPC with configurable CIDR block
-- Public and Private Subnets across multiple Availability Zones
+- VPC with configurable CIDR block (10.0.0.0/16)
+- Public and Private Subnets across Availability Zones in sa-east-1
 - Internet Gateway for public subnet connectivity
 - Route Tables and associations
-- Support for both dev and prod environments (sharing the same VPC)
+- Deployed to sa-east-1 (São Paulo) region
 
 ## Prerequisites
 
@@ -31,11 +31,13 @@ The infrastructure is configured via `.pipeline.yaml` in the root directory. Thi
 
 The infrastructure uses the official [terraform-aws-modules/vpc](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest) module, which provides:
 
-- **VPC**: Main virtual private cloud with DNS support enabled
+- **VPC**: Main virtual private cloud with DNS support enabled (10.0.0.0/16)
 - **Internet Gateway**: Provides internet access for public subnets
-- **Public Subnets**: Subnets with auto-assigned public IPs and internet access
-- **Private Subnets**: Isolated subnets for internal resources
+- **Public Subnets**: 2 subnets with auto-assigned public IPs and internet access (10.0.1.0/24, 10.0.2.0/24)
+- **Private Subnets**: 2 isolated subnets for internal resources (10.0.101.0/24, 10.0.102.0/24)
 - **Route Tables**: Separate routing for public and private subnets
+- **Region**: Deployed to sa-east-1 (São Paulo)
+- **Availability Zone**: sa-east-1a
 
 The module simplifies VPC management and follows AWS best practices.
 
@@ -51,24 +53,19 @@ State locking is not implemented to simplify the setup.
 The workflow consists of three main jobs:
 
 1. **setup-backend**: Creates S3 bucket if it doesn't exist
-2. **terraform-plan**: Runs terraform plan for both dev and prod environments
+2. **terraform-plan**: Runs terraform plan
 3. **terraform-apply**: Applies changes to infrastructure (only on main branch)
 
 ### Workflow Triggers
 
-- Push to `main` or `develop` branches
-- Pull requests to `main` or `develop` branches
-- Manual workflow dispatch
+- Push to `main` branch
+- Pull requests to `main` branch
 
 ## Usage
 
 ### Automatic Deployment
 
-Push changes to the `main` branch to automatically deploy infrastructure to both dev and prod environments.
-
-### Manual Deployment
-
-Use the GitHub Actions "Workflow Dispatch" feature to manually trigger deployments for a specific environment.
+Push changes to the `main` branch to automatically deploy infrastructure.
 
 ### Local Development
 
@@ -76,20 +73,20 @@ Use the GitHub Actions "Workflow Dispatch" feature to manually trigger deploymen
    ```bash
    cd terraform
    terraform init \
-     -backend-config="bucket=sideprojects-terraform-state" \
-     -backend-config="key=dev/vpc/terraform.tfstate" \
+     -backend-config="bucket=pepires58-sideprojects-terraform-state" \
+     -backend-config="key=prod/terraform.tfstate" \
      -backend-config="region=sa-east-1" \
      -backend-config="encrypt=true"
    ```
 
 2. Plan changes:
    ```bash
-   terraform plan -var="environment=dev"
+   terraform plan
    ```
 
 3. Apply changes:
    ```bash
-   terraform apply -var="environment=dev"
+   terraform apply
    ```
 
 ## Outputs
